@@ -9,6 +9,7 @@ type Transaction = {
   amount: number;
   date: string;
   account: string;
+  category: string;
 };
 
 export default function Home() {
@@ -20,6 +21,7 @@ export default function Home() {
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState(today);
   const [account, setAccount] = useState("ส่วนตัว");
+  const [category, setCategory] = useState("รายรับทั่วไป");
 
   const income = useMemo(
     () =>
@@ -56,6 +58,7 @@ export default function Home() {
       amount: numberAmount,
       date,
       account,
+      category,
     };
 
     setTransactions((current) => [newTransaction, ...current]);
@@ -144,16 +147,50 @@ export default function Home() {
 
               <select
                 value={type}
-                onChange={(e) =>
-                  setType(e.target.value as "income" | "expense")
-                }
+              onChange={(e) => {
+  const newType = e.target.value as "income" | "expense";
+  setType(newType);
+  setCategory(newType === "income" ? "รายรับทั่วไป" : "อาหาร");
+}}
+                
                 className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3"
               >
                 <option value="income">รายรับ</option>
                 <option value="expense">รายจ่าย</option>
               </select>
             </div>
+<div>
+  <label className="mb-2 block text-sm font-medium">
+    หมวดหมู่
+  </label>
 
+  <select
+    value={category}
+    onChange={(e) => setCategory(e.target.value)}
+    className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3"
+  >
+    {type === "income" ? (
+      <>
+        <option value="รายรับทั่วไป">รายรับทั่วไป</option>
+        <option value="ขายสินค้า">ขายสินค้า</option>
+        <option value="ขายปลา">ขายปลา</option>
+        <option value="เงินเดือน">เงินเดือน</option>
+        <option value="รายรับอื่นๆ">รายรับอื่นๆ</option>
+      </>
+    ) : (
+      <>
+        <option value="อาหาร">อาหาร</option>
+        <option value="ค่าเดินทาง">ค่าเดินทาง</option>
+        <option value="ค่าน้ำ-ค่าไฟ">ค่าน้ำ-ค่าไฟ</option>
+        <option value="วัตถุดิบ">วัตถุดิบ</option>
+        <option value="ค่าอาหารปลา">ค่าอาหารปลา</option>
+        <option value="อุปกรณ์">อุปกรณ์</option>
+        <option value="ค่ารักษาพยาบาล">ค่ารักษาพยาบาล</option>
+        <option value="ค่าใช้จ่ายอื่นๆ">ค่าใช้จ่ายอื่นๆ</option>
+      </>
+    )}
+  </select>
+</div>
             <div>
               <label className="mb-2 block text-sm font-medium">
                 วันที่
@@ -226,6 +263,7 @@ export default function Home() {
                       {item.date}
                     </p>
                     <p className="mt-1 text-sm text-blue-600">บัญชี: {item.account}</p>
+                    <p className="mt-1 text-sm text-purple-600">หมวดหมู่: {item.category}</p>
                   </div>
 
                   <div className="flex items-center gap-4">
