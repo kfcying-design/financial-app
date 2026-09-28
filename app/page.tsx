@@ -32,7 +32,7 @@ export default function Home() {
   async function loadTransactions() {
     const { data, error } = await supabase
   .from("transactions")
-  .select("*")
+  .select("*, accounts(name), categories(name)")
   .order("date", { ascending: false });
     if (error) {
   console.error(error);
@@ -46,8 +46,8 @@ export default function Home() {
       title: item.title,
       amount: Number(item.amount),
       date: item.date,
-      account: "",
-      category: "",
+     account: item.accounts?.name ?? "",
+     category: item.categories?.name ?? "",
     }))
   );
 } 
