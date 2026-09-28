@@ -56,7 +56,42 @@ export default function Home() {
       alert("กรุณากรอกรายการและจำนวนเงินให้ถูกต้อง");
       return;
     }
+const { data: accountData, error: accountError } = await supabase
+  .from("accounts")
+  .select("id")
+  .eq("name", account)
+  .single();
 
+if (accountError || !accountData) {
+  alert("ไม่พบบัญชีในฐานข้อมูล");
+  return;
+}
+const { data: categoryData, error: categoryError } = await supabase
+  .from("categories")
+  .select("id")
+  .eq("name", category)
+  .eq("type", type)
+  .single();
+
+if (categoryError || !categoryData) {
+  alert("ไม่พบหมวดหมู่ในฐานข้อมูล");
+  return;
+}
+    const { error: insertError } = await supabase
+  .from("transactions")
+  .insert({
+    date,
+    account_id: accountData.id,
+    category_id: categoryData.id,
+    title: title.trim(),
+    amount: numberAmount,
+    type,
+  });
+
+if (insertError) {
+  alert("บันทึกข้อมูลไม่สำเร็จ: " + insertError.message);
+  return;
+}
     const newTransaction: Transaction = {
       id: Date.now(),
       type,
