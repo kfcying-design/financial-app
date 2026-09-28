@@ -9,7 +9,7 @@ const supabase = createClient(
 );
 
 type Transaction = {
-  id: number;
+  id: string;
   type: "income" | "expense";
   title: string;
   amount: number;
@@ -104,7 +104,7 @@ if (categoryError || !categoryData) {
   alert("ไม่พบหมวดหมู่ในฐานข้อมูล");
   return;
 }
-    const { error: insertError } = await supabase
+    const { data: insertedData, error: insertError } = await supabase
   .from("transactions")
   .insert({
     date,
@@ -114,13 +114,15 @@ if (categoryError || !categoryData) {
     amount: numberAmount,
     type,
   });
+    .select("id")
+    .single();
 
 if (insertError) {
   alert("บันทึกข้อมูลไม่สำเร็จ: " + insertError.message);
   return;
 }
     const newTransaction: Transaction = {
-      id: Date.now(),
+      id: insertedData.id,
       type,
       title: title.trim(),
       amount: numberAmount,
@@ -134,10 +136,19 @@ if (insertError) {
     setAmount("");
   }
 
-  function deleteTransaction(id: number) {
+ async function deleteTransaction(id: string) {
+    const { error } = await supabase
+  .from("transactions")
+  .delete()
+  .eq("id", id);
+
+if (error) {
+  alert("ลบข้อมูลไม่สำเร็จ: " + error.message);
+  return;
+}
     setTransactions((current) =>
-      current.filter((item) => item.id !== id)
-    );
+  current.filter((item) => item.id !== id)
+); 
   }
 
   const money = (value: number) =>
