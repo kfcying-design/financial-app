@@ -113,7 +113,7 @@ if (categoryError || !categoryData) {
     title: title.trim(),
     amount: numberAmount,
     type,
-  });
+  })
     .select("id")
     .single();
 
