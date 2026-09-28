@@ -1,6 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
+);
 
 type Transaction = {
   id: number;
@@ -41,7 +47,7 @@ export default function Home() {
 
   const balance = income - expense;
 
-  function addTransaction(e: React.FormEvent<HTMLFormElement>) {
+  async function addTransaction(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const numberAmount = Number(amount);
