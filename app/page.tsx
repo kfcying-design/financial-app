@@ -8,6 +8,7 @@ type Transaction = {
   title: string;
   amount: number;
   date: string;
+  account: string;
 };
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState(today);
+  const [account, setAccount] = useState("ส่วนตัว");
 
   const income = useMemo(
     () =>
@@ -53,6 +55,7 @@ export default function Home() {
       title: title.trim(),
       amount: numberAmount,
       date,
+      account,
     };
 
     setTransactions((current) => [newTransaction, ...current]);
@@ -117,6 +120,23 @@ export default function Home() {
             onSubmit={addTransaction}
             className="grid gap-4 md:grid-cols-2"
           >
+            <div>
+  <label className="mb-2 block text-sm font-medium">
+    บัญชี
+  </label>
+
+  <select
+    value={account}
+    onChange={(e) => setAccount(e.target.value)}
+    className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3"
+  >
+    <option value="ส่วนตัว">ส่วนตัว</option>
+    <option value="ฟาร์มปลา">ฟาร์มปลา</option>
+    <option value="ครอบครัว">ครอบครัว</option>
+    <option value="งานวัด">งานวัด</option>
+    <option value="ร้านค้า">ร้านค้า</option>
+  </select>
+</div>
             <div>
               <label className="mb-2 block text-sm font-medium">
                 ประเภทรายการ
@@ -205,6 +225,7 @@ export default function Home() {
                     <p className="mt-1 text-sm text-slate-400">
                       {item.date}
                     </p>
+                    <p className="mt-1 text-sm text-blue-600">บัญชี: {item.account}</p>
                   </div>
 
                   <div className="flex items-center gap-4">
