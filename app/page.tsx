@@ -30,7 +30,28 @@ export default function Home() {
   const [category, setCategory] = useState("รายรับทั่วไป");
   useEffect(() => {
   async function loadTransactions() {
-  }
+    const { data, error } = await supabase
+  .from("transactions")
+  .select("*")
+  .order("date", { ascending: false });
+    if (error) {
+  console.error(error);
+  return;
+}
+ if (data) {
+  setTransactions(
+    data.map((item) => ({
+      id: item.id,
+      type: item.type,
+      title: item.title,
+      amount: Number(item.amount),
+      date: item.date,
+      account: "",
+      category: "",
+    }))
+  );
+} 
+}
 
   loadTransactions();
 }, []);
