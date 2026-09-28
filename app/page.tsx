@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -28,6 +28,12 @@ export default function Home() {
   const [date, setDate] = useState(today);
   const [account, setAccount] = useState("ส่วนตัว");
   const [category, setCategory] = useState("รายรับทั่วไป");
+  useEffect(() => {
+  async function loadTransactions() {
+  }
+
+  loadTransactions();
+}, []);
 
   const income = useMemo(
     () =>
