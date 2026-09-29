@@ -27,8 +27,37 @@ export default function Home() {
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState(today);
   const [account, setAccount] = useState("ส่วนตัว");
+  const [accounts, setAccounts] = useState<string[]>([]);
   const [category, setCategory] = useState("รายรับทั่วไป");
-  useEffect(() => {
+  const [categories, setCategories] = useState<{ name: string; type: string }[]>([]);
+  useEffect(() => {async function loadAccounts() {
+  const { data, error } = await supabase
+    .from("accounts")
+    .select("name");
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  if (data) {
+    setAccounts(data.map((item) => item.name));
+  }
+}
+async function loadCategories() {
+  const { data, error } = await supabase
+    .from("categories")
+    .select("name, type");
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  if (data) {
+    setCategories(data);
+  }
+}           
   async function loadTransactions() {
     const { data, error } = await supabase
   .from("transactions")
@@ -53,7 +82,9 @@ export default function Home() {
 } 
 }
 
-  loadTransactions();
+loadAccounts();
+loadCategories();
+loadTransactions();
 }, []);
 
   const income = useMemo(
@@ -212,11 +243,12 @@ if (error) {
     onChange={(e) => setAccount(e.target.value)}
     className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3"
   >
-    <option value="ส่วนตัว">ส่วนตัว</option>
-    <option value="ฟาร์มปลา">ฟาร์มปลา</option>
-    <option value="ครอบครัว">ครอบครัว</option>
-    <option value="งานวัด">งานวัด</option>
-    <option value="ร้านค้า">ร้านค้า</option>
+  {accounts.map((name) => (
+  <option key={name} value={name}>
+    {name}
+  </option>
+))}
+    
   </select>
 </div>
             <div>
@@ -249,24 +281,25 @@ if (error) {
     className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3"
   >
     {type === "income" ? (
-      <>
-        <option value="รายรับทั่วไป">รายรับทั่วไป</option>
-        <option value="ขายสินค้า">ขายสินค้า</option>
-        <option value="ขายปลา">ขายปลา</option>
-        <option value="เงินเดือน">เงินเดือน</option>
-        <option value="รายรับอื่นๆ">รายรับอื่นๆ</option>
-      </>
+    <>
+  {categories
+    .filter((item) => item.type === "income")
+    .map((item) => (
+      <option key={item.name} value={item.name}>
+        {item.name}
+      </option>
+    ))}
+</>
     ) : (
-      <>
-        <option value="อาหาร">อาหาร</option>
-        <option value="ค่าเดินทาง">ค่าเดินทาง</option>
-        <option value="ค่าน้ำ-ค่าไฟ">ค่าน้ำ-ค่าไฟ</option>
-        <option value="วัตถุดิบ">วัตถุดิบ</option>
-        <option value="ค่าอาหารปลา">ค่าอาหารปลา</option>
-        <option value="อุปกรณ์">อุปกรณ์</option>
-        <option value="ค่ารักษาพยาบาล">ค่ารักษาพยาบาล</option>
-        <option value="ค่าใช้จ่ายอื่นๆ">ค่าใช้จ่ายอื่นๆ</option>
-      </>
+    <>
+  {categories
+    .filter((item) => item.type === "expense")
+    .map((item) => (
+      <option key={item.name} value={item.name}>
+        {item.name}
+      </option>
+    ))}
+</>
     )}
   </select>
 </div>
