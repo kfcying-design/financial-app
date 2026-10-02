@@ -30,6 +30,7 @@ export default function Home() {
   const [accounts, setAccounts] = useState<string[]>([]);
   const [category, setCategory] = useState("รายรับทั่วไป");
   const [categories, setCategories] = useState<{ name: string; type: string }[]>([]);
+  const [editingId, setEditingId] = useState<string | null>(null);
   useEffect(() => {async function loadAccounts() {
   const { data, error } = await supabase
     .from("accounts")
@@ -135,6 +136,43 @@ if (categoryError || !categoryData) {
   alert("ไม่พบหมวดหมู่ในฐานข้อมูล");
   return;
 }
+  if (editingId) {
+  const { error: updateError } = await supabase
+    .from("transactions")
+    .update({
+      date,
+      account_id: accountData.id,
+      category_id: categoryData.id,
+      title: title.trim(),
+      amount: numberAmount,
+      type,
+    })
+    .eq("id", editingId);
+
+  if (updateError) {
+    alert("แก้ไขข้อมูลไม่สำเร็จ: " + updateError.message);
+    return;
+  }
+setTransactions((current) =>
+  current.map((item) =>
+    item.id === editingId
+      ? {
+          ...item,
+          type,
+          title: title.trim(),
+          amount: numberAmount,
+          date,
+          account,
+          category,
+        }
+      : item
+  )
+);
+setEditingId(null);
+setTitle("");
+setAmount("");
+return;
+}
     const { data: insertedData, error: insertError } = await supabase
   .from("transactions")
   .insert({
@@ -181,6 +219,15 @@ if (error) {
   current.filter((item) => item.id !== id)
 ); 
   }
+  function startEdit(item: Transaction) {
+  setEditingId(item.id);
+  setType(item.type);
+  setTitle(item.title);
+  setAmount(String(item.amount));
+  setDate(item.date);
+  setAccount(item.account);
+  setCategory(item.category);
+}
 
   const money = (value: number) =>
     new Intl.NumberFormat("th-TH", {
@@ -390,6 +437,13 @@ if (error) {
                       {money(item.amount)}
                     </p>
 
+                  <button
+                    type="button"
+                    onClick={() => startEdit(item)}
+                    className="rounded-lg bg-blue-50 px-3 py-2 text-sm text-blue-600"
+                  >
+                    แก้ไข
+                  </button>
                     <button
                       type="button"
                       onClick={() => deleteTransaction(item.id)}
