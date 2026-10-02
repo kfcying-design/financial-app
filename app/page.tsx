@@ -422,7 +422,11 @@ if (error) {
   <button
     type="button"
     onClick={() => setFilterType("all")}
-    className="rounded-lg bg-slate-100 px-4 py-2"
+    className={`rounded-lg px-4 py-2 ${
+  filterType === "all"
+    ? "bg-slate-800 text-white"
+    : "bg-slate-100 text-slate-700"
+  }`}
   >
     ทั้งหมด
   </button>
@@ -430,7 +434,11 @@ if (error) {
   <button
     type="button"
     onClick={() => setFilterType("income")}
-    className="rounded-lg bg-emerald-50 px-4 py-2 text-emerald-600"
+   className={`rounded-lg px-4 py-2 ${
+  filterType === "income"
+    ? "bg-emerald-600 text-white"
+    : "bg-emerald-50 text-emerald-600"
+}`}
   >
     รายรับ
   </button>
@@ -438,7 +446,11 @@ if (error) {
   <button
     type="button"
     onClick={() => setFilterType("expense")}
-    className="rounded-lg bg-red-50 px-4 py-2 text-red-500"
+   className={`rounded-lg px-4 py-2 ${
+  filterType === "expense"
+    ? "bg-red-500 text-white"
+    : "bg-red-50 text-red-500"
+}`}
   >
     รายจ่าย
   </button>
