@@ -238,6 +238,7 @@ if (error) {
 
   const [filterType, setFilterType] = useState<"all" | "income" | "expense">("all");
   const [filterAccount, setFilterAccount] = useState("all");
+  const [filterMonth, setFilterMonth] = useState("all");
   return (
     <main className="min-h-screen bg-slate-100 text-slate-900">
       <div className="mx-auto max-w-5xl px-4 py-8">
@@ -474,11 +475,24 @@ if (error) {
     ))}
   </select>
 </div>
+<div className="mb-4">
+  <label className="mb-2 block text-sm font-medium">
+    กรองตามเดือน
+  </label>
 
-         {transactions.filter((item) =>
+  <input
+    type="month"
+    value={filterMonth === "all" ? "" : filterMonth}
+    onChange={(e) => setFilterMonth(e.target.value || "all")}
+    className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3"
+  />
+</div>
+
+       {transactions.filter((item) =>
           (filterType === "all" || item.type === filterType) &&
-          (filterAccount === "all" || item.account === filterAccount)
-        ).length === 0 ? (
+          (filterAccount === "all" || item.account === filterAccount) &&
+          (filterMonth === "all" || item.date.startsWith(filterMonth))
+      ).length === 0 ? (
             <div className="py-12 text-center text-slate-400">
               ไม่พบรายการตามตัวกรอง
             </div>
@@ -487,6 +501,7 @@ if (error) {
              {transactions
             .filter((item) => filterType === "all" || item.type === filterType)
             .filter((item) => filterAccount === "all" || item.account === filterAccount)
+            .filter((item) => filterMonth === "all" || item.date.startsWith(filterMonth))
             .map((item) => (
                 <div
                   key={item.id}
