@@ -397,7 +397,7 @@ if (error) {
               type="submit"
               className="rounded-xl bg-slate-900 px-6 py-3 font-semibold text-white md:col-span-2"
             >
-              + บันทึกรายการ
+             {editingId ? "✓ บันทึกการแก้ไข" : "+ บันทึกรายการ"}
             </button>
           </form>
         </section>
