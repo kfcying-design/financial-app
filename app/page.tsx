@@ -87,21 +87,28 @@ loadAccounts();
 loadCategories();
 loadTransactions();
 }, []);
-
+const [filterType, setFilterType] = useState<"all" | "income" | "expense">("all");
+const [filterAccount, setFilterAccount] = useState("all");
+const [filterMonth, setFilterMonth] = useState("all");
+const filteredTransactions = useMemo(() => transactions.filter((item) =>
+  (filterType === "all" || item.type === filterType) &&
+  (filterAccount === "all" || item.account === filterAccount) &&
+  (filterMonth === "all" || item.date.startsWith(filterMonth))
+), [transactions, filterType, filterAccount, filterMonth]);
   const income = useMemo(
     () =>
-      transactions
+      filteredTransactions
         .filter((item) => item.type === "income")
         .reduce((sum, item) => sum + item.amount, 0),
-    [transactions]
+    [filteredTransactions]
   );
 
   const expense = useMemo(
     () =>
-      transactions
+      filteredTransactions
         .filter((item) => item.type === "expense")
         .reduce((sum, item) => sum + item.amount, 0),
-    [transactions]
+    [filteredTransactions]
   );
 
   const balance = income - expense;
@@ -236,9 +243,7 @@ if (error) {
       minimumFractionDigits: 2,
     }).format(value);
 
-  const [filterType, setFilterType] = useState<"all" | "income" | "expense">("all");
-  const [filterAccount, setFilterAccount] = useState("all");
-  const [filterMonth, setFilterMonth] = useState("all");
+ 
   return (
     <main className="min-h-screen bg-slate-100 text-slate-900">
       <div className="mx-auto max-w-5xl px-4 py-8">
