@@ -237,6 +237,7 @@ if (error) {
     }).format(value);
 
   const [filterType, setFilterType] = useState<"all" | "income" | "expense">("all");
+  const [filterAccount, setFilterAccount] = useState("all");
   return (
     <main className="min-h-screen bg-slate-100 text-slate-900">
       <div className="mx-auto max-w-5xl px-4 py-8">
@@ -455,6 +456,24 @@ if (error) {
     รายจ่าย
   </button>
 </div>
+<div className="mb-4">
+  <label className="mb-2 block text-sm font-medium">
+    กรองตามบัญชี
+  </label>
+
+  <select
+    value={filterAccount}
+    onChange={(e) => setFilterAccount(e.target.value)}
+    className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3"
+  >
+    <option value="all">ทุกบัญชี</option>
+    {accounts.map((name) => (
+      <option key={name} value={name}>
+        {name}
+      </option>
+    ))}
+  </select>
+</div>
 
           {transactions.length === 0 ? (
             <div className="py-12 text-center text-slate-400">
@@ -464,6 +483,7 @@ if (error) {
             <div className="space-y-3">
              {transactions
             .filter((item) => filterType === "all" || item.type === filterType)
+            .filter((item) => filterAccount === "all" || item.account === filterAccount)
             .map((item) => (
                 <div
                   key={item.id}
