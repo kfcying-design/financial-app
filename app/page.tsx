@@ -457,6 +457,17 @@ if (error) {
     รายจ่าย
   </button>
 </div>
+<button
+  type="button"
+  onClick={() => {
+    setFilterType("all");
+    setFilterAccount("all");
+    setFilterMonth("all");
+  }}
+  className="mb-4 rounded-lg bg-slate-200 px-4 py-2 text-slate-700"
+>
+  ล้างตัวกรอง
+</button>
 <div className="mb-4">
   <label className="mb-2 block text-sm font-medium">
     กรองตามบัญชี
