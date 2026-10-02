@@ -475,9 +475,12 @@ if (error) {
   </select>
 </div>
 
-          {transactions.length === 0 ? (
+         {transactions.filter((item) =>
+          (filterType === "all" || item.type === filterType) &&
+          (filterAccount === "all" || item.account === filterAccount)
+        ).length === 0 ? (
             <div className="py-12 text-center text-slate-400">
-              ยังไม่มีรายการ
+              ไม่พบรายการตามตัวกรอง
             </div>
           ) : (
             <div className="space-y-3">
