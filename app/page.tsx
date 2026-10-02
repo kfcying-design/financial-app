@@ -399,6 +399,19 @@ if (error) {
             >
              {editingId ? "✓ บันทึกการแก้ไข" : "+ บันทึกรายการ"}
             </button>
+  {editingId && (
+    <button
+    type="button"
+    onClick={() => {
+      setEditingId(null);
+      setTitle("");
+      setAmount("");
+    }}
+    className="mt-2 w-full rounded-xl bg-slate-100 px-6 py-3 font-semibold text-slate-600"
+    >
+    ยกเลิกการแก้ไข
+  </button>
+)}
           </form>
         </section>
 
