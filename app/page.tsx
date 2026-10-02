@@ -236,6 +236,7 @@ if (error) {
       minimumFractionDigits: 2,
     }).format(value);
 
+  const [filterType, setFilterType] = useState<"all" | "income" | "expense">("all");
   return (
     <main className="min-h-screen bg-slate-100 text-slate-900">
       <div className="mx-auto max-w-5xl px-4 py-8">
@@ -417,6 +418,31 @@ if (error) {
 
         <section className="mt-6 rounded-2xl bg-white p-6 shadow-sm">
           <h2 className="mb-5 text-xl font-bold">รายการล่าสุด</h2>
+          <div className="mb-4 flex gap-2">
+  <button
+    type="button"
+    onClick={() => setFilterType("all")}
+    className="rounded-lg bg-slate-100 px-4 py-2"
+  >
+    ทั้งหมด
+  </button>
+
+  <button
+    type="button"
+    onClick={() => setFilterType("income")}
+    className="rounded-lg bg-emerald-50 px-4 py-2 text-emerald-600"
+  >
+    รายรับ
+  </button>
+
+  <button
+    type="button"
+    onClick={() => setFilterType("expense")}
+    className="rounded-lg bg-red-50 px-4 py-2 text-red-500"
+  >
+    รายจ่าย
+  </button>
+</div>
 
           {transactions.length === 0 ? (
             <div className="py-12 text-center text-slate-400">
@@ -424,7 +450,9 @@ if (error) {
             </div>
           ) : (
             <div className="space-y-3">
-              {transactions.map((item) => (
+             {transactions
+            .filter((item) => filterType === "all" || item.type === filterType)
+            .map((item) => (
                 <div
                   key={item.id}
                   className="flex items-center justify-between rounded-xl border border-slate-200 p-4"
