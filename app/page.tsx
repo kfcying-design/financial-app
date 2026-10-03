@@ -126,7 +126,7 @@ const filterMonthLabel =
       result[item.category] = (result[item.category] || 0) + item.amount;
       return result;
     }, {})
-);
+).sort((a, b) => b[1] - a[1]);
   async function addTransaction(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
