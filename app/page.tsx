@@ -119,6 +119,14 @@ const filterMonthLabel =
         month: "long",
         year: "numeric",
       }).format(new Date(`${filterMonth}-01T00:00:00`));
+  const expenseByCategory = Object.entries(
+  filteredTransactions
+    .filter((item) => item.type === "expense")
+    .reduce<Record<string, number>>((result, item) => {
+      result[item.category] = (result[item.category] || 0) + item.amount;
+      return result;
+    }, {})
+);
   async function addTransaction(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -524,6 +532,7 @@ if (error) {
             </div>
           ) : (
             <div className="space-y-3">
+              
              {transactions
             .filter((item) => filterType === "all" || item.type === filterType)
             .filter((item) => filterAccount === "all" || item.account === filterAccount)
@@ -573,6 +582,26 @@ if (error) {
               ))}
             </div>
           )}
+        </section>
+        <section className="mt-6 rounded-2xl bg-white p-6 shadow-sm">
+          <h2 className="mb-5 text-xl font-bold">รายจ่ายตามหมวดหมู่</h2>
+        {expenseByCategory.length === 0 ? (
+          <p className="text-sm text-slate-400">ยังไม่มีข้อมูลรายจ่าย</p>
+        ) : (
+        <div className="space-y-3">
+          {expenseByCategory.map(([categoryName, total]) => (
+  <div
+    key={categoryName}
+    className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
+  >
+    <span>{categoryName}</span>
+    <span className="font-semibold text-red-500">
+      {money(total)}
+    </span>
+  </div>
+))}
+        </div>
+            )}
         </section>
 
         <p className="mt-8 text-center text-xs text-slate-400">
