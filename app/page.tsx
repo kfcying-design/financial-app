@@ -596,7 +596,7 @@ if (error) {
   >
     <span>{categoryName}</span>
     <span className="font-semibold text-red-500">
-      {money(total)}
+      {money(total)} ({expense > 0 ? ((total / expense) * 100).toFixed(1) : "0.0"}%)
     </span>
   </div>
 ))}
