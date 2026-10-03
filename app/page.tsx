@@ -112,7 +112,13 @@ const filteredTransactions = useMemo(() => transactions.filter((item) =>
   );
 
   const balance = income - expense;
-
+const filterMonthLabel =
+  filterMonth === "all"
+    ? "ทุกเดือน"
+    : new Intl.DateTimeFormat("th-TH", {
+        month: "long",
+        year: "numeric",
+      }).format(new Date(`${filterMonth}-01T00:00:00`));
   async function addTransaction(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -253,6 +259,10 @@ if (error) {
             บันทึกและตรวจสอบเงินเข้า–ออกได้ง่าย ๆ
           </p>
         </div>
+        
+        <p className="mb-4 text-sm text-slate-500">
+          สรุปยอด • {filterMonthLabel}
+        </p>
 
         <section className="grid gap-4 md:grid-cols-3">
           <div className="rounded-2xl bg-white p-6 shadow-sm">
