@@ -127,6 +127,14 @@ const filterMonthLabel =
       return result;
     }, {})
 ).sort((a, b) => b[1] - a[1]);
+  const incomeByCategory = Object.entries(
+  filteredTransactions
+    .filter((item) => item.type === "income")
+    .reduce<Record<string, number>>((result, item) => {
+      result[item.category] = (result[item.category] || 0) + item.amount;
+      return result;
+    }, {})
+).sort((a, b) => b[1] - a[1]);
   async function addTransaction(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -603,6 +611,29 @@ if (error) {
         </div>
             )}
         </section>
+
+        <section className="mt-6 rounded-2xl bg-white p-6 shadow-sm">
+  <h2 className="mb-5 text-xl font-bold">รายรับตามหมวดหมู่</h2>
+
+  {incomeByCategory.length === 0 ? (
+    <p className="text-sm text-slate-400">ยังไม่มีข้อมูลรายรับ</p>
+  ) : (
+    <div className="space-y-3">
+      {incomeByCategory.map(([categoryName, total]) => (
+        <div
+          key={categoryName}
+          className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
+        >
+          <span>{categoryName}</span>
+
+          <span className="font-semibold text-emerald-600">
+            {money(total)} ({income > 0 ? ((total / income) * 100).toFixed(1) : "0.0"}%)
+          </span>
+        </div>
+      ))}
+    </div>
+  )}
+</section>
 
         <p className="mt-8 text-center text-xs text-slate-400">
           Financial App
