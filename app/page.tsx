@@ -16,6 +16,7 @@ type Transaction = {
   date: string;
   account: string;
   category: string;
+  created_at: string;
 };
 
 export default function Home() {
@@ -63,7 +64,8 @@ async function loadCategories() {
     const { data, error } = await supabase
   .from("transactions")
   .select("*, accounts(name), categories(name)")
-  .order("date", { ascending: false });
+  .order("date", { ascending: false })
+  .order("created_at", { ascending: false });
     if (error) {
   console.error(error);
   return;
@@ -76,6 +78,7 @@ async function loadCategories() {
       title: item.title,
       amount: Number(item.amount),
       date: item.date,
+      created_at: item.created_at,
      account: item.accounts?.name ?? "",
      category: item.categories?.name ?? "",
     }))
@@ -225,7 +228,7 @@ return;
     amount: numberAmount,
     type,
   })
-    .select("id")
+    .select("id, created_at")
     .single();
 
 if (insertError) {
@@ -238,6 +241,7 @@ if (insertError) {
       title: title.trim(),
       amount: numberAmount,
       date,
+      created_at: insertedData.created_at,
       account,
       category,
     };
