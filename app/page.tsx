@@ -135,6 +135,19 @@ const filterMonthLabel =
       return result;
     }, {})
 ).sort((a, b) => b[1] - a[1]);
+
+  const summaryByAccount = Object.entries(
+  filteredTransactions.reduce<
+    Record<string, { income: number; expense: number }>
+  >((result, item) => {
+    if (!result[item.account]) {
+      result[item.account] = { income: 0, expense: 0 };
+    }
+
+    result[item.account][item.type] += item.amount;
+    return result;
+  }, {})
+);
   async function addTransaction(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -631,6 +644,47 @@ if (error) {
           </span>
         </div>
       ))}
+    </div>
+  )}
+</section>
+
+<section className="mt-6 rounded-2xl bg-white p-6 shadow-sm">
+  <h2 className="mb-5 text-xl font-bold">สรุปตามบัญชี</h2>
+
+  {summaryByAccount.length === 0 ? (
+    <p className="text-sm text-slate-400">ยังไม่มีข้อมูลบัญชี</p>
+  ) : (
+    <div className="space-y-3">
+      {summaryByAccount.map(([accountName, summary]) => {
+        const accountBalance = summary.income - summary.expense;
+
+        return (
+          <div
+            key={accountName}
+            className="rounded-xl bg-slate-50 px-4 py-4"
+          >
+            <p className="mb-2 font-semibold">{accountName}</p>
+
+            <div className="grid gap-2 sm:grid-cols-3">
+              <p className="text-emerald-600">
+                รายรับ {money(summary.income)}
+              </p>
+
+              <p className="text-red-500">
+                รายจ่าย {money(summary.expense)}
+              </p>
+
+              <p
+                className={
+                  accountBalance >= 0 ? "text-blue-600" : "text-red-600"
+                }
+              >
+                คงเหลือ {money(accountBalance)}
+              </p>
+            </div>
+          </div>
+        );
+      })}
     </div>
   )}
 </section>
