@@ -92,7 +92,7 @@ loadTransactions();
 }, []);
 const [filterType, setFilterType] = useState<"all" | "income" | "expense">("all");
 const [filterAccount, setFilterAccount] = useState("all");
-const [filterMonth, setFilterMonth] = useState("all");
+const [filterMonth, setFilterMonth] = useState(new Date().toISOString().slice(0, 7));
 const filteredTransactions = useMemo(() => transactions.filter((item) =>
   (filterType === "all" || item.type === filterType) &&
   (filterAccount === "all" || item.account === filterAccount) &&
