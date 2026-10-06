@@ -67,26 +67,7 @@ async function loadCategories() {
     setCategories(data);
   }
 }
-async function addCategory() {
-  const name = newCategory.trim();
 
-  if (!name) {
-    alert("กรุณากรอกชื่อหมวดหมู่");
-    return;
-  }
-  const { error } = await supabase
-  .from("categories")
-  .insert({ name, type });
-
-if (error) {
-  alert("เพิ่มหมวดหมู่ไม่สำเร็จ: " + error.message);
-  return;
-}
-setCategories((current) => [...current, { name, type }]);
-setCategory(name);
-setNewCategory("");
-setShowAddCategory(false);
-}
   async function loadTransactions() {
     const { data, error } = await supabase
   .from("transactions")
@@ -117,6 +98,28 @@ loadAccounts();
 loadCategories();
 loadTransactions();
 }, []);
+async function addCategory() {
+  const name = newCategory.trim();
+
+  if (!name) {
+    alert("กรุณากรอกชื่อหมวดหมู่");
+    return;
+  }
+
+  const { error } = await supabase
+    .from("categories")
+    .insert({ name, type });
+
+  if (error) {
+    alert("เพิ่มหมวดหมู่ไม่สำเร็จ: " + error.message);
+    return;
+  }
+
+  setCategories((current) => [...current, { name, type }]);
+  setCategory(name);
+  setNewCategory("");
+  setShowAddCategory(false);
+}
 async function addAccount() {
   const name = newAccount.trim();
 
