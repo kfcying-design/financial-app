@@ -103,7 +103,7 @@ async function addAccount() {
 
   const { error } = await supabase
     .from("accounts")
-    .insert({ name });
+    .insert({ name, type: "personal" });
 
   if (error) {
     alert("เพิ่มบัญชีไม่สำเร็จ: " + error.message);
