@@ -560,6 +560,31 @@ if (error) {
 </>
     )}
   </select>
+<button
+  type="button"
+  onClick={() => setShowAddCategory(!showAddCategory)}
+  className="mt-2 text-sm text-blue-600"
+>
+  + เพิ่มหมวดหมู่
+</button>
+{showAddCategory && (
+  <div className="mt-2 flex gap-2">
+    <input
+      type="text"
+      value={newCategory}
+      onChange={(e) => setNewCategory(e.target.value)}
+      placeholder="ชื่อหมวดหมู่ใหม่"
+      className="flex-1 rounded-xl border border-slate-300 bg-white px-4 py-3"
+    />
+<button
+  type="button"
+  onClick={addCategory}
+  className="rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white"
+>
+  บันทึก
+</button>
+  </div>
+)}
 </div>
             <div>
               <label className="mb-2 block text-sm font-medium">
