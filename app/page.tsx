@@ -120,6 +120,38 @@ async function addCategory() {
   setNewCategory("");
   setShowAddCategory(false);
 }
+async function deleteCategory(name: string) {
+  const hasTransactions = transactions.some(
+    (item) => item.category === name
+  );
+
+  if (hasTransactions) {
+    alert("ไม่สามารถลบหมวดหมู่นี้ได้ เพราะยังมีรายการรายรับ–รายจ่ายอยู่");
+    return;
+  }
+const confirmed = confirm(`ต้องการลบหมวดหมู่ "${name}" ใช่หรือไม่?`);
+
+if (!confirmed) {
+  return;
+}
+const { error } = await supabase
+  .from("categories")
+  .delete()
+  .eq("name", name);
+
+if (error) {
+  alert("ลบหมวดหมู่ไม่สำเร็จ: " + error.message);
+  return;
+}
+setCategories((current) =>
+  current.filter((item) => item.name !== name)
+);
+
+if (category === name) {
+  const remaining = categories.filter((item) => item.name !== name);
+  setCategory(remaining[0]?.name ?? "");
+}
+}
 async function addAccount() {
   const name = newAccount.trim();
 
@@ -569,6 +601,13 @@ if (error) {
   className="mt-2 text-sm text-blue-600"
 >
   + เพิ่มหมวดหมู่
+</button>
+<button
+  type="button"
+  onClick={() => deleteCategory(category)}
+  className="ml-3 mt-2 text-sm text-red-600"
+>
+  ลบหมวดหมู่
 </button>
 {showAddCategory && (
   <div className="mt-2 flex gap-2">
