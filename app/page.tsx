@@ -37,6 +37,8 @@ export default function Home() {
   const [categories, setCategories] = useState<{ name: string; type: string }[]>([]);
   const [newCategory, setNewCategory] = useState("");
   const [showAddCategory, setShowAddCategory] = useState(false);
+  const [showEditCategory, setShowEditCategory] = useState(false);
+  const [editCategoryName, setEditCategoryName] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   useEffect(() => {async function loadAccounts() {
   const { data, error } = await supabase
@@ -151,6 +153,33 @@ if (category === name) {
   const remaining = categories.filter((item) => item.name !== name);
   setCategory(remaining[0]?.name ?? "");
 }
+}
+async function updateCategory() {
+  const newName = editCategoryName.trim();
+
+  if (!newName) {
+    alert("กรุณากรอกชื่อหมวดหมู่ใหม่");
+    return;
+  }
+const oldName = category;
+const { error } = await supabase
+  .from("categories")
+  .update({ name: newName })
+  .eq("name", oldName);
+
+if (error) {
+  alert("แก้ชื่อหมวดหมู่ไม่สำเร็จ: " + error.message);
+  return;
+}
+setCategories((current) =>
+  current.map((item) =>
+    item.name === oldName ? { ...item, name: newName } : item
+  )
+);
+
+setCategory(newName);
+setEditCategoryName("");
+setShowEditCategory(false);
 }
 async function addAccount() {
   const name = newAccount.trim();
@@ -604,11 +633,39 @@ if (error) {
 </button>
 <button
   type="button"
+  onClick={() => {
+    setEditCategoryName(category);
+    setShowEditCategory(!showEditCategory);
+  }}
+  className="ml-3 mt-2 text-sm text-amber-600"
+>
+  แก้ไขหมวดหมู่
+</button>
+<button
+  type="button"
   onClick={() => deleteCategory(category)}
   className="ml-3 mt-2 text-sm text-red-600"
 >
   ลบหมวดหมู่
 </button>
+{showEditCategory && (
+  <div className="mt-2 flex gap-2">
+    <input
+      type="text"
+      value={editCategoryName}
+      onChange={(e) => setEditCategoryName(e.target.value)}
+      placeholder="ชื่อหมวดหมู่ใหม่"
+      className="flex-1 rounded-xl border border-slate-300 bg-white px-4 py-3"
+    />
+  <button
+  type="button"
+  onClick={updateCategory}
+  className="rounded-xl bg-amber-500 px-4 py-3 text-sm font-medium text-white"
+>
+  บันทึกชื่อใหม่
+</button>
+  </div>
+)}
 {showAddCategory && (
   <div className="mt-2 flex gap-2">
     <input
