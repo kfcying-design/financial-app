@@ -115,6 +115,31 @@ async function addAccount() {
   setNewAccount("");
   setShowAddAccount(false);
 }
+async function deleteAccount(name: string) {
+  const hasTransactions = transactions.some(
+    (item) => item.account === name
+  );
+
+  if (hasTransactions) {
+    alert("ไม่สามารถลบบัญชีนี้ได้ เพราะยังมีรายการรายรับ–รายจ่ายอยู่");
+    return;
+  }
+const confirmed = confirm(`ต้องการลบบัญชี "${name}" ใช่หรือไม่?`);
+
+if (!confirmed) {
+  return;
+}
+const { error } = await supabase
+  .from("accounts")
+  .delete()
+  .eq("name", name);
+
+if (error) {
+  alert("ลบบัญชีไม่สำเร็จ: " + error.message);
+  return;
+}
+setAccounts((current) => current.filter((item) => item !== name));
+}
 const [filterType, setFilterType] = useState<"all" | "income" | "expense">("all");
 const [filterAccount, setFilterAccount] = useState("all");
 const [filterMonth, setFilterMonth] = useState(new Date().toISOString().slice(0, 7));
@@ -379,6 +404,13 @@ if (error) {
   className="mt-2 text-sm text-blue-600"
 >
   + เพิ่มบัญชี
+</button>
+<button
+  type="button"
+  onClick={() => deleteAccount(account)}
+  className="ml-3 mt-2 text-sm text-red-600"
+>
+  ลบบัญชีนี้
 </button>
 {showAddAccount && (
   <div className="mt-2 flex gap-2">
