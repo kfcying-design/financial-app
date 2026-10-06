@@ -29,6 +29,8 @@ export default function Home() {
   const [date, setDate] = useState(today);
   const [account, setAccount] = useState("ส่วนตัว");
   const [accounts, setAccounts] = useState<string[]>([]);
+  const [newAccount, setNewAccount] = useState("");
+  const [showAddAccount, setShowAddAccount] = useState(false);
   const [category, setCategory] = useState("รายรับทั่วไป");
   const [categories, setCategories] = useState<{ name: string; type: string }[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -45,6 +47,28 @@ export default function Home() {
   if (data) {
     setAccounts(data.map((item) => item.name));
   }
+}
+async function addAccount() {
+  const name = newAccount.trim();
+
+  if (!name) {
+    alert("กรุณากรอกชื่อบัญชี");
+    return;
+  }
+
+  const { error } = await supabase
+    .from("accounts")
+    .insert({ name });
+
+  if (error) {
+    alert("เพิ่มบัญชีไม่สำเร็จ: " + error.message);
+    return;
+  }
+
+  setAccounts((current) => [...current, name]);
+  setAccount(name);
+  setNewAccount("");
+  setShowAddAccount(false);
 }
 async function loadCategories() {
   const { data, error } = await supabase
@@ -348,6 +372,31 @@ if (error) {
 ))}
     
   </select>
+<button
+  type="button"
+  onClick={() => setShowAddAccount(!showAddAccount)}
+  className="mt-2 text-sm text-blue-600"
+>
+  + เพิ่มบัญชี
+</button>
+{showAddAccount && (
+  <div className="mt-2 flex gap-2">
+    <input
+      type="text"
+      value={newAccount}
+      onChange={(e) => setNewAccount(e.target.value)}
+      placeholder="ชื่อบัญชีใหม่"
+      className="flex-1 rounded-xl border border-slate-300 bg-white px-4 py-3"
+    />
+  <button
+  type="button"
+  onClick={addAccount}
+  className="rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white"
+>
+  บันทึก
+</button>
+  </div>
+)}
 </div>
             <div>
               <label className="mb-2 block text-sm font-medium">
