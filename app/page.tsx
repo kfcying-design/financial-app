@@ -35,6 +35,8 @@ export default function Home() {
   const [editAccountName, setEditAccountName] = useState("");
   const [category, setCategory] = useState("รายรับทั่วไป");
   const [categories, setCategories] = useState<{ name: string; type: string }[]>([]);
+  const [newCategory, setNewCategory] = useState("");
+  const [showAddCategory, setShowAddCategory] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   useEffect(() => {async function loadAccounts() {
   const { data, error } = await supabase
@@ -64,7 +66,27 @@ async function loadCategories() {
   if (data) {
     setCategories(data);
   }
-}           
+}
+async function addCategory() {
+  const name = newCategory.trim();
+
+  if (!name) {
+    alert("กรุณากรอกชื่อหมวดหมู่");
+    return;
+  }
+  const { error } = await supabase
+  .from("categories")
+  .insert({ name, type });
+
+if (error) {
+  alert("เพิ่มหมวดหมู่ไม่สำเร็จ: " + error.message);
+  return;
+}
+setCategories((current) => [...current, { name, type }]);
+setCategory(name);
+setNewCategory("");
+setShowAddCategory(false);
+}
   async function loadTransactions() {
     const { data, error } = await supabase
   .from("transactions")
