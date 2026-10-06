@@ -48,28 +48,7 @@ export default function Home() {
     setAccounts(data.map((item) => item.name));
   }
 }
-async function addAccount() {
-  const name = newAccount.trim();
 
-  if (!name) {
-    alert("กรุณากรอกชื่อบัญชี");
-    return;
-  }
-
-  const { error } = await supabase
-    .from("accounts")
-    .insert({ name });
-
-  if (error) {
-    alert("เพิ่มบัญชีไม่สำเร็จ: " + error.message);
-    return;
-  }
-
-  setAccounts((current) => [...current, name]);
-  setAccount(name);
-  setNewAccount("");
-  setShowAddAccount(false);
-}
 async function loadCategories() {
   const { data, error } = await supabase
     .from("categories")
@@ -114,6 +93,28 @@ loadAccounts();
 loadCategories();
 loadTransactions();
 }, []);
+async function addAccount() {
+  const name = newAccount.trim();
+
+  if (!name) {
+    alert("กรุณากรอกชื่อบัญชี");
+    return;
+  }
+
+  const { error } = await supabase
+    .from("accounts")
+    .insert({ name });
+
+  if (error) {
+    alert("เพิ่มบัญชีไม่สำเร็จ: " + error.message);
+    return;
+  }
+
+  setAccounts((current) => [...current, name]);
+  setAccount(name);
+  setNewAccount("");
+  setShowAddAccount(false);
+}
 const [filterType, setFilterType] = useState<"all" | "income" | "expense">("all");
 const [filterAccount, setFilterAccount] = useState("all");
 const [filterMonth, setFilterMonth] = useState(new Date().toISOString().slice(0, 7));
