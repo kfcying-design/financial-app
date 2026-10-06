@@ -31,6 +31,8 @@ export default function Home() {
   const [accounts, setAccounts] = useState<string[]>([]);
   const [newAccount, setNewAccount] = useState("");
   const [showAddAccount, setShowAddAccount] = useState(false);
+  const [showEditAccount, setShowEditAccount] = useState(false);
+  const [editAccountName, setEditAccountName] = useState("");
   const [category, setCategory] = useState("รายรับทั่วไป");
   const [categories, setCategories] = useState<{ name: string; type: string }[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -139,6 +141,32 @@ if (error) {
   return;
 }
 setAccounts((current) => current.filter((item) => item !== name));
+}
+async function updateAccount() {
+  const newName = editAccountName.trim();
+
+  if (!newName) {
+    alert("กรุณากรอกชื่อบัญชีใหม่");
+    return;
+  }
+const oldName = account;
+
+const { error } = await supabase
+  .from("accounts")
+  .update({ name: newName })
+  .eq("name", oldName);
+
+if (error) {
+  alert("แก้ชื่อบัญชีไม่สำเร็จ: " + error.message);
+  return;
+}
+setAccounts((current) =>
+  current.map((item) => (item === oldName ? newName : item))
+);
+
+setAccount(newName);
+setEditAccountName("");
+setShowEditAccount(false);
 }
 const [filterType, setFilterType] = useState<"all" | "income" | "expense">("all");
 const [filterAccount, setFilterAccount] = useState("all");
@@ -407,11 +435,39 @@ if (error) {
 </button>
 <button
   type="button"
+  onClick={() => {
+    setEditAccountName(account);
+    setShowEditAccount(!showEditAccount);
+  }}
+  className="ml-3 mt-2 text-sm text-amber-600"
+>
+  แก้ชื่อบัญชี
+</button>
+<button
+  type="button"
   onClick={() => deleteAccount(account)}
   className="ml-3 mt-2 text-sm text-red-600"
 >
   ลบบัญชีนี้
 </button>
+{showEditAccount && (
+  <div className="mt-2 flex gap-2">
+    <input
+      type="text"
+      value={editAccountName}
+      onChange={(e) => setEditAccountName(e.target.value)}
+      placeholder="ชื่อบัญชีใหม่"
+      className="flex-1 rounded-xl border border-slate-300 bg-white px-4 py-3"
+    />
+    <button
+      type="button"
+      onClick={updateAccount}
+      className="rounded-xl bg-amber-500 px-4 py-3 text-sm font-medium text-white"
+    >
+      บันทึกชื่อใหม่
+    </button>
+  </div>
+)}
 {showAddAccount && (
   <div className="mt-2 flex gap-2">
     <input
