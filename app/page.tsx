@@ -329,18 +329,21 @@ const filterMonthLabel =
     }, {})
 ).sort((a, b) => b[1] - a[1]);
 
-  const summaryByAccount = Object.entries(
-  filteredTransactions.reduce<
-    Record<string, { income: number; expense: number }>
-  >((result, item) => {
-    if (!result[item.account]) {
-      result[item.account] = { income: 0, expense: 0 };
-    }
+const summaryByAccount = accounts.map((accountName) => {
+  const accountTransactions = filteredTransactions.filter(
+    (item) => item.account === accountName
+  );
 
-    result[item.account][item.type] += item.amount;
-    return result;
-  }, {})
-);
+  const income = accountTransactions
+    .filter((item) => item.type === "income")
+    .reduce((sum, item) => sum + item.amount, 0);
+
+  const expense = accountTransactions
+    .filter((item) => item.type === "expense")
+    .reduce((sum, item) => sum + item.amount, 0);
+
+  return [accountName, { income, expense }] as const;
+});
   async function addTransaction(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
