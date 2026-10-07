@@ -244,16 +244,21 @@ async function updateAccount() {
   }
 const oldName = account;
 
-const { error } = await supabase
+const { data, error } = await supabase
   .from("accounts")
   .update({
   name: newName,
   opening_balance: Number(editOpeningBalance) || 0,
   })
-  .eq("name", oldName);
+  .eq("name", oldName)
+  .select();
 
 if (error) {
   alert("แก้ชื่อบัญชีไม่สำเร็จ: " + error.message);
+  return;
+}
+if (!data || data.length === 0) {
+  alert("ไม่พบบัญชีที่ต้องการแก้ไข");
   return;
 }
 setAccounts((current) =>
