@@ -29,6 +29,7 @@ export default function Home() {
   const [date, setDate] = useState(today);
   const [account, setAccount] = useState("ส่วนตัว");
   const [accounts, setAccounts] = useState<string[]>([]);
+  const [openingBalances, setOpeningBalances] = useState<Record<string, number>>({});
   const [newAccount, setNewAccount] = useState("");
   const [showAddAccount, setShowAddAccount] = useState(false);
   const [showEditAccount, setShowEditAccount] = useState(false);
@@ -43,7 +44,7 @@ export default function Home() {
   useEffect(() => {async function loadAccounts() {
   const { data, error } = await supabase
     .from("accounts")
-    .select("name");
+    .select("name, opening_balance");
 
   if (error) {
     console.error(error);
@@ -51,8 +52,13 @@ export default function Home() {
   }
 
   if (data) {
-    setAccounts(data.map((item) => item.name));
-  }
+  setAccounts(data.map((item) => item.name));
+  setOpeningBalances(
+    Object.fromEntries(
+      data.map((item) => [item.name, Number(item.opening_balance ?? 0)])
+    )
+  );
+}
 }
 
 async function loadCategories() {
@@ -277,8 +283,12 @@ const filteredTransactions = useMemo(() => transactions.filter((item) =>
         .reduce((sum, item) => sum + item.amount, 0),
     [filteredTransactions]
   );
+  const openingBalance =
+  filterAccount === "all"
+    ? Object.values(openingBalances).reduce((sum, value) => sum + value, 0)
+    : openingBalances[filterAccount] ?? 0;
 
-  const balance = income - expense;
+  const balance = openingBalance + income - expense;
 const filterMonthLabel =
   filterMonth === "all"
     ? "ทุกเดือน"
