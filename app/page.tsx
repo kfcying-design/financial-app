@@ -973,7 +973,8 @@ if (isResettingPassword) {
     type="month"
     value={filterMonth === "all" ? "" : filterMonth}
     onChange={(e) => setFilterMonth(e.target.value || "all")}
-    className="block w-full min-w-0 max-w-full rounded-xl border border-slate-300 bg-white px-4 py-3"
+   className="block min-w-0 max-w-full rounded-xl border border-slate-300 bg-white px-4 py-3"
+style={{ width: "100%", boxSizing: "border-box" }}
   />
 <button
   type="button"
