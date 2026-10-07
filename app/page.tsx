@@ -236,6 +236,7 @@ if (error) {
 setAccounts((current) => current.filter((item) => item !== name));
 }
 async function updateAccount() {
+  alert("updateAccount ทำงานแล้ว");
   const newName = editAccountName.trim();
 
   if (!newName) {
