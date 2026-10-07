@@ -115,6 +115,21 @@ loadAccounts();
 loadCategories();
 loadTransactions();
 }, []);
+
+async function handleLogin() {
+  const { error } = await supabase.auth.signInWithPassword({
+    email: loginEmail,
+    password: loginPassword,
+  });
+
+  if (error) {
+    alert("เข้าสู่ระบบไม่สำเร็จ: " + error.message);
+    return;
+  }
+
+  const { data } = await supabase.auth.getUser();
+  setUser(data.user);
+}  
 async function addCategory() {
   const name = newCategory.trim();
 
@@ -484,7 +499,37 @@ if (error) {
       currency: "THB",
       minimumFractionDigits: 2,
     }).format(value);
-
+if (!user) {
+  return (
+    <main className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow">
+        <h1 className="text-2xl font-bold mb-2">เข้าสู่ระบบ</h1>
+        <p className="text-slate-500 mb-6">บัญชีรายรับ–รายจ่าย</p>
+        <input
+  type="email"
+  value={loginEmail}
+  onChange={(e) => setLoginEmail(e.target.value)}
+  placeholder="อีเมล"
+  className="w-full rounded-xl border border-slate-300 px-4 py-3"
+/>
+  <input
+  type="password"
+  value={loginPassword}
+  onChange={(e) => setLoginPassword(e.target.value)}
+  placeholder="รหัสผ่าน"
+  className="mt-3 w-full rounded-xl border border-slate-300 px-4 py-3"
+/>
+  <button
+  type="button"
+  onClick={handleLogin}
+  className="mt-4 w-full rounded-xl bg-slate-900 px-4 py-3 font-medium text-white"
+>
+  เข้าสู่ระบบ
+</button>
+      </div>
+    </main>
+  );
+}
  
   return (
     <main className="min-h-screen bg-slate-100 text-slate-900">
