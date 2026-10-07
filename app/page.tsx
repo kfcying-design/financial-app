@@ -30,6 +30,7 @@ export default function Home() {
   const [account, setAccount] = useState("ส่วนตัว");
   const [accounts, setAccounts] = useState<string[]>([]);
   const [openingBalances, setOpeningBalances] = useState<Record<string, number>>({});
+  const [editOpeningBalance, setEditOpeningBalance] = useState("");
   const [newAccount, setNewAccount] = useState("");
   const [showAddAccount, setShowAddAccount] = useState(false);
   const [showEditAccount, setShowEditAccount] = useState(false);
@@ -245,7 +246,10 @@ const oldName = account;
 
 const { error } = await supabase
   .from("accounts")
-  .update({ name: newName })
+  .update({
+  name: newName,
+  opening_balance: Number(editOpeningBalance) || 0,
+  })
   .eq("name", oldName);
 
 if (error) {
@@ -255,9 +259,15 @@ if (error) {
 setAccounts((current) =>
   current.map((item) => (item === oldName ? newName : item))
 );
-
+setOpeningBalances((current) => {
+  const updated = { ...current };
+  delete updated[oldName];
+  updated[newName] = Number(editOpeningBalance) || 0;
+  return updated;
+});
 setAccount(newName);
 setEditAccountName("");
+setEditOpeningBalance("");
 setShowEditAccount(false);
 }
 const [filterType, setFilterType] = useState<"all" | "income" | "expense">("all");
@@ -533,6 +543,7 @@ if (error) {
   type="button"
   onClick={() => {
     setEditAccountName(account);
+    setEditOpeningBalance(String(openingBalances[account] ?? 0));
     setShowEditAccount(!showEditAccount);
   }}
   className="ml-3 mt-2 text-sm text-amber-600"
@@ -554,6 +565,13 @@ if (error) {
       onChange={(e) => setEditAccountName(e.target.value)}
       placeholder="ชื่อบัญชีใหม่"
       className="flex-1 rounded-xl border border-slate-300 bg-white px-4 py-3"
+    />
+    <input
+  type="number"
+  value={editOpeningBalance}
+  onChange={(e) => setEditOpeningBalance(e.target.value)}
+  placeholder="ยอดตั้งต้น"
+  className="flex-1 rounded-xl border border-slate-300 bg-white px-4 py-3"
     />
     <button
       type="button"
