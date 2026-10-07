@@ -961,7 +961,8 @@ if (error) {
   ) : (
     <div className="space-y-3">
       {summaryByAccount.map(([accountName, summary]) => {
-        const accountBalance = summary.income - summary.expense;
+       const accountBalance =
+      (openingBalances[accountName] ?? 0) + summary.income - summary.expense;
 
         return (
           <div
