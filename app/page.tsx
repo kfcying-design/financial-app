@@ -42,6 +42,14 @@ export default function Home() {
   const [showEditCategory, setShowEditCategory] = useState(false);
   const [editCategoryName, setEditCategoryName] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [user, setUser] = useState<any>(null);
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  useEffect(() => {
+  supabase.auth.getUser().then(({ data }) => {
+    setUser(data.user);
+  });
+}, []);
   useEffect(() => {async function loadAccounts() {
   const { data, error } = await supabase
     .from("accounts")
