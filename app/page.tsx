@@ -329,7 +329,9 @@ const filterMonthLabel =
     }, {})
 ).sort((a, b) => b[1] - a[1]);
 
-const summaryByAccount = accounts.map((accountName) => {
+const summaryByAccount = accounts
+  .filter((accountName) => filterAccount === "all" || accountName === filterAccount)
+  .map((accountName) => {
   const accountTransactions = filteredTransactions.filter(
     (item) => item.account === accountName
   );
