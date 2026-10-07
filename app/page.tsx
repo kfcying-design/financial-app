@@ -45,10 +45,23 @@ export default function Home() {
   const [user, setUser] = useState<any>(null);
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
   useEffect(() => {
   supabase.auth.getUser().then(({ data }) => {
     setUser(data.user);
   });
+
+  const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+    setUser(session?.user ?? null);
+
+    if (event === "PASSWORD_RECOVERY") {
+      setIsResettingPassword(true);
+    }
+  });
+
+  return () => {
+    authListener.subscription.unsubscribe();
+  };
 }, []);
   useEffect(() => {async function loadAccounts() {
   const { data, error } = await supabase
@@ -130,6 +143,20 @@ async function handleLogin() {
   const { data } = await supabase.auth.getUser();
   setUser(data.user);
 }  
+
+async function handleUpdatePassword() {
+  const { error } = await supabase.auth.updateUser({
+    password: loginPassword,
+  });
+
+  if (error) {
+    alert("เปลี่ยนรหัสผ่านไม่สำเร็จ: " + error.message);
+    return;
+  }
+
+  alert("เปลี่ยนรหัสผ่านเรียบร้อยแล้ว");
+  setIsResettingPassword(false);
+}
 async function addCategory() {
   const name = newCategory.trim();
 
@@ -499,7 +526,33 @@ if (error) {
       currency: "THB",
       minimumFractionDigits: 2,
     }).format(value);
-if (!user) {
+if (isResettingPassword) {
+  return (
+    <main className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow">
+        <h1 className="text-2xl font-bold mb-2">ตั้งรหัสผ่านใหม่</h1>
+        <p className="text-slate-500 mb-6">กรอกรหัสผ่านใหม่ที่ต้องการใช้</p>
+
+        <input
+          type="password"
+          value={loginPassword}
+          onChange={(e) => setLoginPassword(e.target.value)}
+          placeholder="รหัสผ่านใหม่"
+          className="w-full rounded-xl border border-slate-300 px-4 py-3"
+        />
+
+        <button
+          type="button"
+          onClick={handleUpdatePassword}
+          className="mt-4 w-full rounded-xl bg-slate-900 px-4 py-3 font-medium text-white"
+        >
+          บันทึกรหัสผ่านใหม่
+        </button>
+      </div>
+    </main>
+  );
+}
+  if (!user) {
   return (
     <main className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow">
