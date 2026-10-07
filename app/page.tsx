@@ -588,6 +588,7 @@ if (error) {
     </button>
   </div>
 )}
+
 {showAddAccount && (
   <div className="mt-2 flex gap-2">
     <input
@@ -607,7 +608,7 @@ if (error) {
   </div>
 )}
 </div>
-            <div>
+            <div className="self-start">
               <label className="mb-2 block text-sm font-medium">
                 ประเภทรายการ
               </label>
