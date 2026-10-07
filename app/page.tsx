@@ -1013,7 +1013,7 @@ if (isResettingPassword) {
                     <p className="mt-1 text-sm text-purple-600">หมวดหมู่: {item.category}</p>
                   </div>
 
-                  <div className="flex items-center gap-4">
+                  <div className="flex flex-wrap items-center justify-end gap-2">
                     <p
                       className={`font-bold ${
                         item.type === "income"
