@@ -1002,7 +1002,7 @@ if (isResettingPassword) {
             .map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between rounded-xl border border-slate-200 p-4"
+                  className="flex flex-col gap-3 rounded-xl border border-slate-200 p-4 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div>
                     <p className="font-semibold">{item.title}</p>
