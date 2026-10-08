@@ -429,7 +429,10 @@ const { data: categoryData, error: categoryError } = await supabase
   .single();
 
 if (categoryError || !categoryData) {
-  alert("ไม่พบหมวดหมู่ในฐานข้อมูล");
+ alert(
+  "เกิดข้อผิดพลาดในการค้นหาหมวดหมู่: " +
+  (categoryError?.message || "ไม่พบข้อมูลหมวดหมู่")
+);
   return;
 }
   if (editingId) {
