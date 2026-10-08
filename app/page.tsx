@@ -405,6 +405,7 @@ const summaryByAccount = accounts
       alert("กรุณากรอกรายการและจำนวนเงินให้ถูกต้อง");
       return;
     }
+console.log("บัญชีที่เลือก:", JSON.stringify(account));
 const { data: accountData, error: accountError } = await supabase
   .from("accounts")
   .select("id")
