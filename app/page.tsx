@@ -412,7 +412,10 @@ const { data: accountData, error: accountError } = await supabase
   .single();
 
 if (accountError || !accountData) {
-  alert("ไม่พบบัญชีในฐานข้อมูล");
+  alert(
+    "เกิดข้อผิดพลาดในการค้นหาบัญชี: " +
+    (accountError?.message || "ไม่พบข้อมูลบัญชี")
+  );
   return;
 }
 const { data: categoryData, error: categoryError } = await supabase
