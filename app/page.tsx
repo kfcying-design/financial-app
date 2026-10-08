@@ -27,7 +27,7 @@ export default function Home() {
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState(today);
-  const [account, setAccount] = useState("ส่วนตัว");
+  const [account, setAccount] = useState("1.ส่วนตัว");
   const [accounts, setAccounts] = useState<string[]>([]);
   const [openingBalances, setOpeningBalances] = useState<Record<string, number>>({});
   const [editOpeningBalance, setEditOpeningBalance] = useState("");
