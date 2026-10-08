@@ -411,6 +411,8 @@ const { data: accountData, error: accountError } = await supabase
   .select("id")
   .eq("name", account)
   .single();
+  console.log("ผลค้นหาบัญชี:", accountData);
+  console.log("ข้อผิดพลาดบัญชี:", accountError);
 
 if (accountError || !accountData) {
   alert(
